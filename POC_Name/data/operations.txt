@@ -1,0 +1,9 @@
+[2026-10-24 13:00:57] User=Sravanthi | Action=LOGIN | Result=Success
+[2026-10-24 13:03:07] User=Sravanthi | Action=ADD | Result=Invalid input
+[2026-10-24 13:04:27] User=Sravanthi | Action=ADD | Result=Success | ID=101 | Name=Maneesha | Plan=5G Unlimited | Status=Active | Network=Airtel
+[2026-10-24 13:05:19] User=Sravanthi | Action=SEARCH | Result=Success | ID=101 | Name=Maneesha | Plan=5G Unlimited | Status=Active | Network=Airtel
+[2026-10-24 13:08:41] User=Sravanthi | Action=ADD | Result=Success | ID=102 | Name=Akhila | Plan=5G Premium | Status=Registered | Network=Jio
+[2026-10-24 13:09:32] User=Sravanthi | Action=UPDATE | Result=Success | ID=102 | Name=Akhila | Plan=5G Plus | Status=Active | Network=Jio
+[2026-10-24 13:09:46] User=Sravanthi | Action=ACTIVATE | Result=Success | ID=101 | Name=Maneesha | Plan=5G Unlimited | Status=Active | Network=Airtel
+[2026-10-24 13:10:10] User=Sravanthi | Action=RECHARGE | Result=Success | ID=101 | Name=Maneesha | Plan=5G Unlimited | Status=Active | Network=Airtel
+[2026-10-24 13:10:30] User=Sravanthi | Action=VIEW_ALL | Result=Success
