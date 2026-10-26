@@ -1,0 +1,8 @@
+build/
+*.o
+*.gcda
+*.gcno
+*.gcov
+*.bak
+coverage.info
+coverage-report/

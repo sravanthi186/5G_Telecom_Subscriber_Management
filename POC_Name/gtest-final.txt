@@ -1,0 +1,57 @@
+Google Test requires libgtest-dev / installed GTest and a C++ compiler.
+gcc -Iinclude -std=c11 -O0 -g -Wall -Wextra -Wpedantic -D_XOPEN_SOURCE=700 -c src/module1.c -o build/gt_module1.o
+gcc -Iinclude -std=c11 -O0 -g -Wall -Wextra -Wpedantic -D_XOPEN_SOURCE=700 -c src/module2.c -o build/gt_module2.o
+gcc -Iinclude -std=c11 -O0 -g -Wall -Wextra -Wpedantic -D_XOPEN_SOURCE=700 -c src/lifecycle.c -o build/gt_lifecycle.o
+gcc -Iinclude -std=c11 -O0 -g -Wall -Wextra -Wpedantic -D_XOPEN_SOURCE=700 -c src/auth.c -o build/gt_auth.o
+g++ -std=c++17 -g -Iinclude test/test_all_gtest.cpp build/gt_module1.o build/gt_module2.o build/gt_lifecycle.o build/gt_auth.o -lgtest -lgtest_main -pthread -lcrypto -o build/telecom_gtest
+./build/telecom_gtest
+Running main() from ./googletest/src/gtest_main.cc
+[==========] Running 19 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 18 tests from SubscriberTest
+[ RUN      ] SubscriberTest.AddValidSubscriber
+[       OK ] SubscriberTest.AddValidSubscriber (1 ms)
+[ RUN      ] SubscriberTest.RejectDuplicateID
+[       OK ] SubscriberTest.RejectDuplicateID (1 ms)
+[ RUN      ] SubscriberTest.RejectInvalidSubscriber
+[       OK ] SubscriberTest.RejectInvalidSubscriber (0 ms)
+[ RUN      ] SubscriberTest.FindExistingSubscriber
+[       OK ] SubscriberTest.FindExistingSubscriber (2 ms)
+[ RUN      ] SubscriberTest.SubscriberNotFound
+[       OK ] SubscriberTest.SubscriberNotFound (0 ms)
+[ RUN      ] SubscriberTest.UpdateSubscriber
+[       OK ] SubscriberTest.UpdateSubscriber (2 ms)
+[ RUN      ] SubscriberTest.DeleteSubscriber
+[       OK ] SubscriberTest.DeleteSubscriber (0 ms)
+[ RUN      ] SubscriberTest.SharedStringReferenceCount
+[       OK ] SubscriberTest.SharedStringReferenceCount (0 ms)
+[ RUN      ] SubscriberTest.ListAllSubscribers
+[       OK ] SubscriberTest.ListAllSubscribers (0 ms)
+[ RUN      ] SubscriberTest.ConsistencyCheck
+[       OK ] SubscriberTest.ConsistencyCheck (4 ms)
+[ RUN      ] SubscriberTest.SaveAndLoad
+[       OK ] SubscriberTest.SaveAndLoad (9 ms)
+[ RUN      ] SubscriberTest.ActivateAndDeactivate
+[       OK ] SubscriberTest.ActivateAndDeactivate (1 ms)
+[ RUN      ] SubscriberTest.InvalidStatusRejected
+[       OK ] SubscriberTest.InvalidStatusRejected (0 ms)
+[ RUN      ] SubscriberTest.RechargeAndReactivate
+[       OK ] SubscriberTest.RechargeAndReactivate (0 ms)
+[ RUN      ] SubscriberTest.RejectNegativeRecharge
+[       OK ] SubscriberTest.RejectNegativeRecharge (0 ms)
+[ RUN      ] SubscriberTest.NinetyDayInactivity
+[       OK ] SubscriberTest.NinetyDayInactivity (0 ms)
+[ RUN      ] SubscriberTest.AutomaticDeactivation
+[       OK ] SubscriberTest.AutomaticDeactivation (0 ms)
+[ RUN      ] SubscriberTest.TerminatedCannotReactivate
+[       OK ] SubscriberTest.TerminatedCannotReactivate (6 ms)
+[----------] 18 tests from SubscriberTest (33 ms total)
+
+[----------] 1 test from AuthTest
+[ RUN      ] AuthTest.AdminLoginAndViewerRole
+[       OK ] AuthTest.AdminLoginAndViewerRole (519 ms)
+[----------] 1 test from AuthTest (519 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 2 test suites ran. (552 ms total)
+[  PASSED  ] 19 tests.

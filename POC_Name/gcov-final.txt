@@ -1,0 +1,28 @@
+gcc -Iinclude -std=c11 -O0 -g --coverage -D_XOPEN_SOURCE=700 src/module1.c src/module2.c src/lifecycle.c src/utils.c test/test_module1.c -o build/test_coverage -pthread
+./build/test_coverage
+libgcov profiling error:/workspaces/5G_Telecom_Subscriber_Management/POC_Name/build/test_coverage-lifecycle.gcda:overwriting an existing profile data with a different checksum
+PASS: CRUD, duplicate, validation, shared strings, reference counts, persistence, malformed file, collisions, concurrency (3002 records)
+ALL CORE TESTS PASSED
+gcov -b -c -o build build/test_coverage-module1.gcno build/test_coverage-module2.gcno build/test_coverage-utils.gcno
+File 'src/module1.c'
+Lines executed:100.00% of 21
+Branches executed:100.00% of 184
+Taken at least once:64.13% of 184
+Calls executed:86.11% of 72
+Creating 'module1.c.gcov'
+
+File 'src/module2.c'
+Lines executed:100.00% of 17
+Branches executed:96.67% of 120
+Taken at least once:56.67% of 120
+Calls executed:82.14% of 28
+Creating 'module2.c.gcov'
+
+File 'src/utils.c'
+Lines executed:0.00% of 1
+Branches executed:0.00% of 8
+Taken at least once:0.00% of 8
+No calls
+Creating 'utils.c.gcov'
+
+Lines executed:97.44% of 39

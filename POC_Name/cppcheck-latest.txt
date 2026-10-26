@@ -1,0 +1,84 @@
+Checking src/auth.c ...
+Checking src/auth.c: _WIN32...
+1/13 files checked 15% done
+Checking src/benchmark.c ...
+Checking src/benchmark.c: _WIN32...
+2/13 files checked 21% done
+Checking src/concurrency.c ...
+3/13 files checked 24% done
+Checking src/lifecycle.c ...
+4/13 files checked 30% done
+Checking src/main.c ...
+src/main.c:36:78: style: The scope of the variable 'date' can be reduced. [variableScope]
+static void recharge_details(uint64_t id){time_t last=0;double amount=0;char date[32];if(lifecycle_last_recharge(id,RECHARGE_PATH,&last,&amount)==TC_OK){stamp(last,date,sizeof(date));printf("Last Recharge: %s | Amount: %.2f | Days Ago: %d\n",date,amount,lifecycle_days(last,time(NULL)));}else puts("Last Recharge: Not recorded");}
+                                                                             ^
+src/main.c:67:26: style: The scope of the variable 'value' can be reduced. [variableScope]
+ char amt[80],*ep;double value=0;
+                         ^
+src/main.c:29:59: style: Variable 'tmv' can be declared as pointer to const [constVariablePointer]
+static void stamp(time_t t,char *out,size_t n){struct tm *tmv=localtime(&t);if(!tmv||!strftime(out,n,"%Y-%m-%d %H:%M:%S",tmv))snprintf(out,n,"unknown");}
+                                                          ^
+src/main.c:67:31: style: Variable 'value' is assigned a value that is never used. [unreadVariable]
+ char amt[80],*ep;double value=0;
+                              ^
+Checking src/main.c: _WIN32...
+5/13 files checked 49% done
+Checking src/module1.c ...
+src/module1.c:29:39: style: inconclusive: Function 'db_add' argument 2 names different: declaration 'record' definition 'r'. [funcArgNamesDifferent]
+int db_add(Database *db,const Record *r){if(!db||!db->buckets||!validate(r))return TC_INVALID;pthread_rwlock_wrlock(&db->lock);if(lookup(db,r->id)){pthread_rwlock_unlock(&db->lock);return TC_DUPLICATE;}Subscriber *p=alloc(db,sizeof(*p));if(!p){pthread_rwlock_unlock(&db->lock);return TC_NOMEM;}Interned *a=NULL,*b=NULL,*c=NULL;int rc=acquire3(db,r,&a,&b,&c);if(rc){dealloc(db,p);pthread_rwlock_unlock(&db->lock);return rc;}p->id=r->id;p->created_at=r->created_at?r->created_at:time(NULL);p->updated_at=r->updated_at?r->updated_at:p->created_at;strcpy(p->name,r->name);p->plan=a;p->status=b;p->network=c;size_t h=mix(r->id)%db->capacity;if(db->buckets[h])db->collisions++;p->next=db->buckets[h];db->buckets[h]=p;db->count++;pthread_rwlock_unlock(&db->lock);return TC_OK;}
+                                      ^
+include/module1.h:20:39: note: Function 'db_add' argument 2 names different: declaration 'record' definition 'r'.
+int db_add(Database *db,const Record *record);
+                                      ^
+src/module1.c:29:39: note: Function 'db_add' argument 2 names different: declaration 'record' definition 'r'.
+int db_add(Database *db,const Record *r){if(!db||!db->buckets||!validate(r))return TC_INVALID;pthread_rwlock_wrlock(&db->lock);if(lookup(db,r->id)){pthread_rwlock_unlock(&db->lock);return TC_DUPLICATE;}Subscriber *p=alloc(db,sizeof(*p));if(!p){pthread_rwlock_unlock(&db->lock);return TC_NOMEM;}Interned *a=NULL,*b=NULL,*c=NULL;int rc=acquire3(db,r,&a,&b,&c);if(rc){dealloc(db,p);pthread_rwlock_unlock(&db->lock);return rc;}p->id=r->id;p->created_at=r->created_at?r->created_at:time(NULL);p->updated_at=r->updated_at?r->updated_at:p->created_at;strcpy(p->name,r->name);p->plan=a;p->status=b;p->network=c;size_t h=mix(r->id)%db->capacity;if(db->buckets[h])db->collisions++;p->next=db->buckets[h];db->buckets[h]=p;db->count++;pthread_rwlock_unlock(&db->lock);return TC_OK;}
+                                      ^
+src/module1.c:30:42: style: inconclusive: Function 'db_update' argument 2 names different: declaration 'record' definition 'r'. [funcArgNamesDifferent]
+int db_update(Database *db,const Record *r){if(!db||!db->buckets||!validate(r))return TC_INVALID;pthread_rwlock_wrlock(&db->lock);Subscriber *p=lookup(db,r->id);if(!p){pthread_rwlock_unlock(&db->lock);return TC_MISSING;}Interned *a=NULL,*b=NULL,*c=NULL;int rc=acquire3(db,r,&a,&b,&c);if(rc){pthread_rwlock_unlock(&db->lock);return rc;}Interned *oa=p->plan,*ob=p->status,*oc=p->network;p->plan=a;p->status=b;p->network=c;strcpy(p->name,r->name);p->updated_at=time(NULL);release(db,oa);release(db,ob);release(db,oc);pthread_rwlock_unlock(&db->lock);return TC_OK;}
+                                         ^
+include/module1.h:21:42: note: Function 'db_update' argument 2 names different: declaration 'record' definition 'r'.
+int db_update(Database *db,const Record *record);
+                                         ^
+src/module1.c:30:42: note: Function 'db_update' argument 2 names different: declaration 'record' definition 'r'.
+int db_update(Database *db,const Record *r){if(!db||!db->buckets||!validate(r))return TC_INVALID;pthread_rwlock_wrlock(&db->lock);Subscriber *p=lookup(db,r->id);if(!p){pthread_rwlock_unlock(&db->lock);return TC_MISSING;}Interned *a=NULL,*b=NULL,*c=NULL;int rc=acquire3(db,r,&a,&b,&c);if(rc){pthread_rwlock_unlock(&db->lock);return rc;}Interned *oa=p->plan,*ob=p->status,*oc=p->network;p->plan=a;p->status=b;p->network=c;strcpy(p->name,r->name);p->updated_at=time(NULL);release(db,oa);release(db,ob);release(db,oc);pthread_rwlock_unlock(&db->lock);return TC_OK;}
+                                         ^
+src/module1.c:24:37: style: Parameter 'db' can be declared as pointer to const [constParameterPointer]
+static Subscriber *lookup(Database *db,uint64_t id){size_t h=mix(id)%db->capacity;for(Subscriber *p=db->buckets[h];p;p=p->next)if(p->id==id)return p;return NULL;}
+                                    ^
+src/module1.c:32:146: style: Variable 'p' can be declared as pointer to const [constVariablePointer]
+int db_find(Database *db,uint64_t id,Record *out){if(!db||!db->buckets||!id||!out)return TC_INVALID;pthread_rwlock_rdlock(&db->lock);Subscriber *p=lookup(db,id);if(p)export_record(p,out);pthread_rwlock_unlock(&db->lock);return p?TC_OK:TC_MISSING;}
+                                                                                                                                                 ^
+Checking src/module1.c: _WIN32...
+6/13 files checked 65% done
+Checking src/module2.c ...
+src/module2.c:27:568: style: Variable 'sizes' can be declared as const array [constVariable]
+static int parse_line(char *line,Record *r,int version){char *parts[7];size_t n=strlen(line);if(n&&line[n-1]=='\n')line[--n]=0;if(n&&line[n-1]=='\r')line[--n]=0;parts[0]=line;size_t count=1;for(char *p=line;*p;p++)if(*p=='|'){if(count==(version==2?7u:5u))return 0;*p=0;parts[count++]=p+1;}if(count!=(version==2?7u:5u)||!parts[0][0]||parts[0][0]=='-')return 0;char *end=NULL;errno=0;unsigned long long id=strtoull(parts[0],&end,10);if(errno||!end||*end||!id)return 0;memset(r,0,sizeof(*r));r->id=(uint64_t)id;char *dest[]={r->name,r->plan,r->status,r->network};size_t sizes[]={TC_NAME,TC_TEXT,TC_TEXT,TC_TEXT};for(size_t i=0;i<4;i++){size_t len=strlen(parts[i+1]);if(!len||len>=sizes[i])return 0;memcpy(dest[i],parts[i+1],len+1);}if(version==2){char *end1=NULL,*end2=NULL;errno=0;long long a=strtoll(parts[5],&end1,10),b=strtoll(parts[6],&end2,10);if(errno||!end1||*end1||!end2||*end2||a<0||b<0)return 0;r->created_at=(time_t)a;r->updated_at=(time_t)b;}return 1;}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+Checking src/module2.c: _WIN32...
+7/13 files checked 73% done
+Checking src/utils.c ...
+8/13 files checked 74% done
+Checking test/test_all_gtest.cpp ...
+9/13 files checked 85% done
+Checking test/test_auth.c ...
+10/13 files checked 87% done
+Checking test/test_lifecycle.c ...
+11/13 files checked 91% done
+Checking test/test_module1.c ...
+12/13 files checked 97% done
+Checking test/test_module2.c ...
+13/13 files checked 100% done
+src/benchmark.c:22:0: style: The function 'benchmark_run' is never used. [unusedFunction]
+int benchmark_run(size_t n){if(n<1||n>1000000){puts("Dataset size must be between 1 and 1000000.");return 1;}Database db;if(db_init(&db)!=TC_OK)return 1;static const char *plans[]={"5G Unlimited","5G Basic","5G Premium","5G Family"};static const char *statuses[]={"Active","Suspended","Inactive"};static const char *networks[]={"5G SA","5G NSA","4G LTE"};double start=seconds();for(size_t i=0;i<n;i++){Record r={0};r.id=(uint64_t)i+1;snprintf(r.name,sizeof(r.name),"Synthetic_User_%zu",i+1);strcpy(r.plan,plans[i%4]);strcpy(r.status,statuses[i%3]);strcpy(r.network,networks[i%3]);if(db_add(&db,&r)!=TC_OK){fprintf(stderr,"Insertion failed at %zu\n",i);db_destroy(&db);return 1;}}double insert=seconds()-start;Record result;start=seconds();size_t hits=0;for(size_t i=0;i<n;i++)if(db_find(&db,(uint64_t)((i*7919u)%n)+1,&result)==TC_OK)hits++;double lookup=seconds()-start;Stats s;db_stats(&db,&s);size_t baseline=0;/* Compare only repeated text storage, not whole subscriber struct. */
+^
+src/concurrency.c:11:0: style: The function 'concurrency_demo' is never used. [unusedFunction]
+int concurrency_demo(void){Database db;if(db_init(&db)!=TC_OK)return 1;pthread_t threads[WORKERS];struct Job jobs[WORKERS];unsigned created=0;for(unsigned i=0;i<WORKERS;i++){jobs[i]=(struct Job){&db,i,0};if(pthread_create(&threads[i],NULL,worker,&jobs[i])!=0)break;created++;}for(unsigned i=0;i<created;i++)pthread_join(threads[i],NULL);unsigned errors=0;for(unsigned i=0;i<created;i++)errors+=jobs[i].errors;Stats s;db_stats(&db,&s);int rc=db_check(&db);printf("Concurrent test: %u threads x %u operations | records=%zu | errors=%u | invariant=%s\n",created,OPERATIONS,s.subscribers,errors,rc==TC_OK?"PASS":"FAIL");db_destroy(&db);return created==WORKERS&&errors==0&&rc==TC_OK?0:1;}
+^
+test/test_all_gtest.cpp:14:0: style: The function 'SetUp' is never used. [unusedFunction]
+ void SetUp() override { ASSERT_EQ(db_init(&db),TC_OK); }
+^
+test/test_all_gtest.cpp:15:0: style: The function 'TearDown' is never used. [unusedFunction]
+ void TearDown() override { db_destroy(&db); }
+^
+nofile:0:0: information: Active checkers: 173/592 (use --checkers-report=<filename> to see details) [checkersReport]
+

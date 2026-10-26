@@ -1,0 +1,98 @@
+In file included from include/module1.h:3,
+                 from include/lifecycle.h:3,
+                 from src/lifecycle.c:1:
+src/lifecycle.c: In function ‘lifecycle_recharge’:
+include/common.h:14:15: warning: leak of FILE ‘f’ [CWE-775] [-Wanalyzer-file-leak]
+   14 | #define TC_IO 5
+      |               ^
+src/lifecycle.c:35:50: note: in expansion of macro ‘TC_IO’
+   35 |  if(written<0||fflush(f)!=0||fclose(f)!=0)return TC_IO;
+      |                                                  ^~~~~
+  ‘lifecycle_recharge’: events 1-10
+    |
+    |   30 |  if(!db||!path||!isfinite(amount)||amount<=0||when<=0||when>time(NULL)+86400)return TC_INVALID;
+    |      |    ^
+    |      |    |
+    |      |    (1) following ‘false’ branch...
+    |   31 |  Record r;int rc=db_find(db,id,&r);if(rc)return rc;
+    |      |                  ~~~~~~~~~~~~~~~~~   ~
+    |      |                  |                   |
+    |      |                  (2) ...to here      (3) following ‘false’ branch (when ‘rc == 0’)...
+    |   32 |  if(strcmp(r.status,"Terminated")==0||strcmp(r.status,"Suspended")==0)return TC_DENIED;
+    |      |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |    ||
+    |      |    |(4) ...to here
+    |      |    (5) following ‘false’ branch...
+    |   33 |  FILE *f=fopen(path,"a");if(!f)return TC_IO;
+    |      |          ~~~~~~~~~~~~~~~   ~
+    |      |          |                 |
+    |      |          |                 (8) assuming ‘f’ is non-NULL
+    |      |          (6) ...to here    (9) following ‘false’ branch (when ‘f’ is non-NULL)...
+    |      |          (7) opened here
+    |   34 |  int written=fprintf(f,"%" PRIu64 "|%lld|%.2f\n",id,(long long)when,amount);
+    |      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |              |
+    |      |              (10) ...to here
+    |
+  ‘lifecycle_recharge’: event 11
+    |
+    |include/common.h:14:15:
+    |   14 | #define TC_IO 5
+    |      |               ^
+    |      |               |
+    |      |               (11) ‘f’ leaks here; was opened at (7)
+src/lifecycle.c:35:50: note: in expansion of macro ‘TC_IO’
+    |   35 |  if(written<0||fflush(f)!=0||fclose(f)!=0)return TC_IO;
+    |      |                                                  ^~~~~
+    |
+include/common.h:14:15: warning: leak of ‘f’ [CWE-401] [-Wanalyzer-malloc-leak]
+   14 | #define TC_IO 5
+      |               ^
+src/lifecycle.c:35:50: note: in expansion of macro ‘TC_IO’
+   35 |  if(written<0||fflush(f)!=0||fclose(f)!=0)return TC_IO;
+      |                                                  ^~~~~
+  ‘lifecycle_recharge’: events 1-10
+    |
+    |   30 |  if(!db||!path||!isfinite(amount)||amount<=0||when<=0||when>time(NULL)+86400)return TC_INVALID;
+    |      |    ^
+    |      |    |
+    |      |    (1) following ‘false’ branch...
+    |   31 |  Record r;int rc=db_find(db,id,&r);if(rc)return rc;
+    |      |                  ~~~~~~~~~~~~~~~~~   ~
+    |      |                  |                   |
+    |      |                  (2) ...to here      (3) following ‘false’ branch (when ‘rc == 0’)...
+    |   32 |  if(strcmp(r.status,"Terminated")==0||strcmp(r.status,"Suspended")==0)return TC_DENIED;
+    |      |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |    ||
+    |      |    |(4) ...to here
+    |      |    (5) following ‘false’ branch...
+    |   33 |  FILE *f=fopen(path,"a");if(!f)return TC_IO;
+    |      |          ~~~~~~~~~~~~~~~   ~
+    |      |          |                 |
+    |      |          |                 (8) assuming ‘f’ is non-NULL
+    |      |          (6) ...to here    (9) following ‘false’ branch (when ‘f’ is non-NULL)...
+    |      |          (7) allocated here
+    |   34 |  int written=fprintf(f,"%" PRIu64 "|%lld|%.2f\n",id,(long long)when,amount);
+    |      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |              |
+    |      |              (10) ...to here
+    |
+  ‘lifecycle_recharge’: event 11
+    |
+    |include/common.h:14:15:
+    |   14 | #define TC_IO 5
+    |      |               ^
+    |      |               |
+    |      |               (11) ‘f’ leaks here; was allocated at (7)
+src/lifecycle.c:35:50: note: in expansion of macro ‘TC_IO’
+    |   35 |  if(written<0||fflush(f)!=0||fclose(f)!=0)return TC_IO;
+    |      |                                                  ^~~~~
+    |
+src/auth.c: In function ‘auth_read_password’:
+src/auth.c:97:122: warning: unsigned conversion from ‘int’ to ‘tcflag_t’ {aka ‘unsigned int’} changes value from ‘-9’ to ‘4294967287’ [-Wsign-conversion]
+   97 | struct termios old,hidden;int tty=isatty(STDIN_FILENO);if(tty&&tcgetattr(STDIN_FILENO,&old)==0){hidden=old;hidden.c_lflag&=~ECHO;tcsetattr(STDIN_FILENO,TCSANOW,&hidden);}int ok=fgets(out,(int)capacity,stdin)!=NULL;if(tty)tcsetattr(STDIN_FILENO,TCSANOW,&old);putchar('\n');if(!ok)return 0;size_t n=strcspn(out,"\r\n");if(out[n]==0&&n==capacity-1)return 0;out[n]=0;return n>0;
+      |                                                                                                                          ^~
+src/benchmark.c: In function ‘benchmark_run’:
+src/benchmark.c:26:56: warning: conversion from ‘size_t’ {aka ‘long unsigned int’} to ‘double’ may change value [-Wconversion]
+   26 | printf("Average lookup: %.3f microseconds\n",lookup*1e6/n);
+      |                                                        ^
