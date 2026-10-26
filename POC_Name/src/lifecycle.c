@@ -32,7 +32,11 @@ int lifecycle_recharge(Database *db,uint64_t id,double amount,time_t when,const 
  if(strcmp(r.status,"Terminated")==0||strcmp(r.status,"Suspended")==0)return TC_DENIED;
  FILE *f=fopen(path,"a");if(!f)return TC_IO;
  int written=fprintf(f,"%" PRIu64 "|%lld|%.2f\n",id,(long long)when,amount);
- if(written<0||fflush(f)!=0||fclose(f)!=0)return TC_IO;
+ int flush_result = fflush(f);
+int close_result = fclose(f);
+
+if(written < 0 || flush_result != 0 || close_result != 0)
+    return TC_IO;
  return lifecycle_change_status(db,id,"Active");
 }
 int lifecycle_check(Database *db,uint64_t id,const char *path,time_t now,Record *out){

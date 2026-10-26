@@ -17,8 +17,8 @@ typedef struct { uint64_t id; char name[TC_NAME],plan[TC_TEXT],status[TC_TEXT],n
 typedef struct { size_t subscribers, unique_strings, reference_total, string_bytes, approximate_bytes, collisions, allocations, frees, failed_allocations; } Stats;
 int db_init(Database *db);
 void db_destroy(Database *db);
-int db_add(Database *db,const Record *record);
-int db_update(Database *db,const Record *record);
+int db_add(Database *db,const Record *r);
+int db_update(Database *db,const Record *r);
 int db_delete(Database *db,uint64_t id);
 int db_find(Database *db,uint64_t id,Record *out);
 int db_stats(Database *db,Stats *out);

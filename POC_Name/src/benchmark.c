@@ -23,7 +23,7 @@ int benchmark_run(size_t n){if(n<1||n>1000000){puts("Dataset size must be betwee
 for(size_t i=0;i<n;i++){baseline+=strlen(plans[i%4])+1+strlen(statuses[i%3])+1+strlen(networks[i%3])+1;}
 printf("\n=== SYNTHETIC PERFORMANCE BENCHMARK ===\nRecords: %zu | Search hits: %zu\n",n,hits);
 printf("Insert total: %.3f s | Lookup total: %.3f s\n",insert,lookup);
-printf("Average lookup: %.3f microseconds\n",lookup*1e6/n);
+printf("Average lookup: %.3f microseconds\n",lookup*1e6/(double)n);
 printf("Conventional repeated-string bytes (estimated): %zu\n",baseline);
 printf("Interned text bytes (measured): %zu\n",s.string_bytes);
 printf("Unique interned strings: %zu | Hash collisions on insert: %zu\n",s.unique_strings,s.collisions);

@@ -94,6 +94,6 @@ int auth_read_password(char *out,size_t capacity){if(!out||capacity<2)return 0;p
 #ifdef _WIN32
 size_t n=0;int c;while((c=_getch())!='\r'&&c!='\n'){if(c==8&&n){n--;continue;}if(c>=32&&c<127&&n+1<capacity)out[n++]=(char)c;}out[n]=0;putchar('\n');return n>0;
 #else
-struct termios old,hidden;int tty=isatty(STDIN_FILENO);if(tty&&tcgetattr(STDIN_FILENO,&old)==0){hidden=old;hidden.c_lflag&=~ECHO;tcsetattr(STDIN_FILENO,TCSANOW,&hidden);}int ok=fgets(out,(int)capacity,stdin)!=NULL;if(tty)tcsetattr(STDIN_FILENO,TCSANOW,&old);putchar('\n');if(!ok)return 0;size_t n=strcspn(out,"\r\n");if(out[n]==0&&n==capacity-1)return 0;out[n]=0;return n>0;
+struct termios old,hidden;int tty=isatty(STDIN_FILENO);if(tty&&tcgetattr(STDIN_FILENO,&old)==0){hidden=old;hidden.c_lflag &= ~(tcflag_t)ECHO;tcsetattr(STDIN_FILENO,TCSANOW,&hidden);}int ok=fgets(out,(int)capacity,stdin)!=NULL;if(tty)tcsetattr(STDIN_FILENO,TCSANOW,&old);putchar('\n');if(!ok)return 0;size_t n=strcspn(out,"\r\n");if(out[n]==0&&n==capacity-1)return 0;out[n]=0;return n>0;
 #endif
 }
